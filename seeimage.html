@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Image</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        #uploadedImage {
+            max-width: 100%;
+            height: auto;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ਅੱਜ ਦਾ ਹੁਕਮਨਾਮਾ</h1>
+    <div>
+        <img id="uploadedImage" src="" alt="Uploaded Image">
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script>
+        // Replace with your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCihLQmSt_2ss2o9JUiaY3TJ7jIRbxXp9w",
+            authDomain: "greatnew-c5ef2.firebaseapp.com",
+            databaseURL: "https://greatnew-c5ef2-default-rtdb.firebaseio.com",
+            projectId: "greatnew-c5ef2",
+            storageBucket: "greatnew-c5ef2.appspot.com",
+            messagingSenderId: "473679732061",
+            appId: "1:473679732061:web:17ee7dc2e86993178b1cb4",
+            measurementId: "G-EK91CNSGXS"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const storage = firebase.storage();
+        const storageRef = storage.ref();
+        const imageRef = storageRef.child('uploaded-image.jpg');
+
+        const uploadedImage = document.getElementById('uploadedImage');
+
+        // Function to display uploaded image
+        function displayImage() {
+            storageRef.child('uploaded-image.jpg').getDownloadURL().then((url) => {
+                uploadedImage.src = url;
+            }).catch((error) => {
+                console.error('Error getting download URL:', error);
+            });
+        }
+
+        // Fetch and display the image on page load
+        window.addEventListener('load', displayImage);
+    </script>
+</body>
+
+</html>
