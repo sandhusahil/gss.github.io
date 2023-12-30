@@ -65,15 +65,40 @@
         const imageInput = document.getElementById('imageInput');
         const uploadedImage = document.getElementById('uploadedImage');
 
-        // Function to upload image
+        // Function to compress and upload image
         function uploadImage() {
             const file = imageInput.files[0];
 
             if (file) {
-                storageRef.child('uploaded-image.jpg').put(file).then(() => {
-                    console.log('Image uploaded successfully!');
-                    displayImage();
-                });
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = new Image();
+
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Set the canvas dimensions
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+
+                        // Draw the image with reduced quality
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                        // Convert the canvas to Blob and upload to Firebase Storage
+                        canvas.toBlob(function (blob) {
+                            storageRef.child('uploaded-image.jpg').put(blob).then(() => {
+                                console.log('Image uploaded successfully!');
+                                displayImage();
+                            });
+                        }, 'image/jpeg', 0.8); // Adjust quality as needed
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
             } else {
                 console.error('No file selected.');
             }
